@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jornada da Saúde - Portal de Transparência</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: flex;
+        }
+        .calendar-day.selected {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div id="app-container" class="min-h-screen">
+        <!-- ========================== VIEW DE LOGIN ========================== -->
+        <div id="login-view" class="view active min-h-screen w-full flex-col items-center justify-center p-4 bg-gray-100">
+            <div class="w-full max-w-md">
+                <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+                    <h1 class="text-2xl font-bold text-blue-600">Jornada da Saúde</h1>
+                    <p id="login-title" class="text-3xl font-bold mt-4 mb-2">Login</p>
+                    <p id="login-subtitle" class="text-gray-500 mb-8">Bem-vindo(a) de volta!</p>
+
+                    <form id="login-form" class="text-left">
+                        <div class="mb-4">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail, CPF ou CRM</label>
+                            <input type="text" id="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                            <input type="password" id="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <p id="login-error" class="text-red-500 text-sm mb-4 h-5 text-center"></p>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Entrar</button>
+                    </form>
+                </div>
+                 <div class="mt-6 text-center">
+                    <p class="text-gray-600">
+                        <span id="toggle-text">É um médico?</span>
+                        <button id="toggle-role-btn" class="font-semibold text-blue-600 hover:underline">Entrar como Médico</button>
+                    </p>
+                     <p class="text-gray-600 mt-2">
+                        Não tem uma conta? 
+                        <button id="go-to-register-btn" class="font-semibold text-blue-600 hover:underline">Registe-se</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ========================== VIEW DE REGISTO ========================== -->
+        <div id="register-view" class="view min-h-screen w-full flex-col items-center justify-center p-4 bg-gray-100">
+            <div class="w-full max-w-md">
+                <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+                    <h1 class="text-2xl font-bold text-blue-600">Jornada da Saúde</h1>
+                    <p class="text-3xl font-bold mt-4 mb-2">Criar Conta de Paciente</p>
+                    <p class="text-gray-500 mb-8">Preencha os dados para começar.</p>
+                    <form id="register-form" class="text-left">
+                        <input type="text" id="reg-name" required class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nome Completo">
+                        <input type="email" id="reg-email" required class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="E-mail">
+                        <input type="text" id="reg-cpf" required class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="CPF">
+                        <input type="password" id="reg-password" required class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Senha">
+                        <p id="register-error" class="text-red-500 text-sm mb-4 h-5 text-center"></p>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">Criar Conta</button>
+                    </form>
+                </div>
+                 <div class="mt-6 text-center">
+                    <p class="text-gray-600">
+                        Já tem uma conta? 
+                        <button id="go-to-login-btn" class="font-semibold text-blue-600 hover:underline">Entrar</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================== PAINEL DO PACIENTE ========================== -->
+        <div id="patient-dashboard" class="view w-full min-h-screen flex-col">
+            <header class="bg-white shadow-md">
+                <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <div class="text-2xl font-bold text-blue-600">Jornada da Saúde</div>
+                    <div class="flex items-center space-x-6">
+                        <span id="patient-name" class="font-semibold"></span>
+                        <button id="logout-btn-patient" class="flex items-center text-red-500 hover:text-red-700"><i data-lucide="log-out" class="w-5 h-5 mr-2"></i> Sair</button>
+                    </div>
+                </nav>
+            </header>
+            <main class="flex-grow container mx-auto p-8 text-center flex items-center justify-center">
+                 <div class="w-full max-w-4xl">
+                    <h2 id="welcome-patient-name" class="text-4xl font-bold mb-2"></h2>
+                    <p class="text-gray-600 mb-10 max-w-2xl mx-auto">Sua plataforma digital para organizar consultas, aceder a relatórios médicos e comunicar-se com profissionais de saúde num só lugar.</p>
+                    <div class="flex justify-center space-x-6">
+                        <button id="btn-view-schedule" class="bg-white text-blue-600 border border-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center text-lg">
+                            <i data-lucide="calendar-check" class="w-6 h-6 mr-3"></i> Ver Meus Agendamentos
+                        </button>
+                        <button id="btn-new-appointment" class="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center text-lg">
+                            <i data-lucide="plus-circle" class="w-6 h-6 mr-3"></i> Agendar Nova Consulta
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ========================== PAINEL DO MÉDICO ========================== -->
+        <div id="doctor-dashboard" class="view w-full min-h-screen flex-col">
+             <header class="bg-white shadow-md">
+                <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <div class="text-2xl font-bold text-blue-600">Jornada da Saúde</div>
+                    <div class="flex items-center space-x-6">
+                        <span id="doctor-name" class="font-semibold"></span>
+                        <button id="logout-btn-doctor" class="flex items-center text-red-500 hover:text-red-700"><i data-lucide="log-out" class="w-5 h-5 mr-2"></i> Sair</button>
+                    </div>
+                </nav>
+            </header>
+            <main class="flex-grow container mx-auto p-8">
+                <h2 class="text-3xl font-bold mb-6">Minha Agenda</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i data-lucide="chevron-left"></i></button>
+                            <h3 id="month-year" class="text-xl font-semibold"></h3>
+                            <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i data-lucide="chevron-right"></i></button>
+                        </div>
+                        <div class="grid grid-cols-7 gap-2 text-center text-xs text-gray-500 uppercase font-semibold mb-2">
+                            <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                        </div>
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-2"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-4">Disponibilidade</h3>
+                        <p class="text-sm text-gray-500 mb-1">Selecione uma data para editar os horários.</p>
+                        <p id="selected-date-text" class="font-semibold text-blue-600 h-6 mb-4"></p>
+                        <div id="availability-slots" class="space-y-2"></div>
+                         <div id="add-slot-container" class="mt-4 hidden">
+                             <input type="time" id="new-slot-time" class="w-full border rounded-md p-2">
+                             <button id="add-slot-btn" class="w-full mt-2 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Adicionar Horário</button>
+                         </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ========================== VIEW DE AGENDAMENTO (PACIENTE) ========================== -->
+        <div id="scheduling-view" class="view w-full min-h-screen flex-col bg-gray-50">
+             <header class="bg-white shadow-sm">
+                <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <div class="text-2xl font-bold text-blue-600">Agendar Consulta</div>
+                    <button id="back-to-dashboard-btn" class="font-semibold text-gray-600 hover:text-blue-600 flex items-center">
+                        <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i> Voltar ao Painel
+                    </button>
+                </nav>
+            </header>
+            <main class="flex-grow container mx-auto p-8 flex justify-center">
+                <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-4">1. Selecione a data</h3>
+                        <div id="patient-calendar-container"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-4">2. Horários disponíveis</h3>
+                        <p id="patient-selected-date" class="text-gray-600 mb-4 h-6"></p>
+                        <div id="patient-availability-slots" class="grid grid-cols-3 sm:grid-cols-4 gap-3"></div>
+                         <div id="confirmation-section" class="mt-8 hidden">
+                            <p class="text-lg">Confirmar agendamento para <strong id="confirm-details"></strong>?</p>
+                            <button id="confirm-appointment-btn" class="w-full mt-4 bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 font-semibold">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ========================== VIEW MEUS AGENDAMENTOS (PACIENTE) ========================== -->
+        <div id="my-appointments-view" class="view w-full min-h-screen flex-col bg-gray-50">
+            <header class="bg-white shadow-sm">
+                <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                    <div class="text-2xl font-bold text-blue-600">Meus Agendamentos</div>
+                    <button id="back-to-dashboard-btn-2" class="font-semibold text-gray-600 hover:text-blue-600 flex items-center">
+                        <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i> Voltar ao Painel
+                    </button>
+                </nav>
+            </header>
+            <main class="flex-grow container mx-auto p-8">
+                <div id="appointments-list" class="bg-white p-6 rounded-lg shadow-md">
+                    <!-- Lista de agendamentos será inserida aqui -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const views = {
+                login: document.getElementById('login-view'),
+                register: document.getElementById('register-view'),
+                patientDashboard: document.getElementById('patient-dashboard'),
+                doctorDashboard: document.getElementById('doctor-dashboard'),
+                scheduling: document.getElementById('scheduling-view'),
+                myAppointments: document.getElementById('my-appointments-view'),
+            };
+
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const toggleRoleBtn = document.getElementById('toggle-role-btn');
+            const loginTitle = document.getElementById('login-title');
+            const loginSubtitle = document.getElementById('login-subtitle');
+            const toggleText = document.getElementById('toggle-text');
+
+            let currentRole = 'patient';
+            let currentUser = null;
+            let currentDate = new Date();
+            let selectedDate = null;
+            
+            // Funções para salvar e carregar dados no armazenamento local
+            const saveDataToStorage = () => {
+                localStorage.setItem('healthPortalUsers', JSON.stringify(users));
+                localStorage.setItem('healthPortalAvailability', JSON.stringify(doctorAvailability));
+                localStorage.setItem('healthPortalAppointments', JSON.stringify(appointments));
+            };
+
+            const loadDataFromStorage = () => {
+                const storedUsers = localStorage.getItem('healthPortalUsers');
+                const storedAvailability = localStorage.getItem('healthPortalAvailability');
+                const storedAppointments = localStorage.getItem('healthPortalAppointments');
+
+                // Carrega os dados ou inicializa com dados mock se não houver nada salvo
+                let loadedUsers = storedUsers ? JSON.parse(storedUsers) : {
+                    'paciente@email.com': { type: 'patient', password: '123', name: 'Maria Silva', cpf: '123.456.789-00' },
+                    '123.456.789-00': { type: 'patient', password: '123', name: 'Maria Silva', email: 'paciente@email.com' },
+                    'medico@email.com': { type: 'doctor', password: '456', name: 'Dr. João Doe', crm: '12345-SP' },
+                    '12345-SP': { type: 'doctor', password: '456', name: 'Dr. João Doe', email: 'medico@email.com' },
+                };
+
+                let loadedAvailability = storedAvailability ? JSON.parse(storedAvailability) : {
+                    '12345-SP': {
+                        // Adiciona alguns horários para os próximos dias como exemplo
+                        [`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate() + 1).padStart(2, '0')}`]: ['09:00', '10:00', '11:00', '14:00'],
+                        [`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate() + 2).padStart(2, '0')}`]: ['09:30', '10:30', '15:00'],
+                    }
+                };
+                
+                let loadedAppointments = storedAppointments ? JSON.parse(storedAppointments) : [];
+
+                return { users: loadedUsers, doctorAvailability: loadedAvailability, appointments: loadedAppointments };
+            };
+            
+            // Carrega os dados ao iniciar a aplicação
+            let { users, doctorAvailability, appointments } = loadDataFromStorage();
+
+
+            const showView = (viewName) => {
+                Object.values(views).forEach(view => view.classList.remove('active'));
+                views[viewName].classList.add('active');
+                lucide.createIcons();
+            };
+            
+            const updateLoginUI = () => {
+                if (currentRole === 'patient') {
+                    loginTitle.textContent = 'Login';
+                    loginSubtitle.textContent = 'Bem-vindo(a) de volta!';
+                    toggleText.textContent = 'É um médico?';
+                    toggleRoleBtn.textContent = 'Entrar como Médico';
+                } else {
+                    loginTitle.textContent = 'Acesso Médico';
+                    loginSubtitle.textContent = 'Aceda à sua agenda.';
+                    toggleText.textContent = 'É um paciente?';
+                    toggleRoleBtn.textContent = 'Entrar como Paciente';
+                }
+            };
+
+            toggleRoleBtn.addEventListener('click', () => {
+                currentRole = currentRole === 'patient' ? 'doctor' : 'patient';
+                updateLoginUI();
+            });
+
+            document.getElementById('go-to-register-btn').addEventListener('click', () => showView('register'));
+            document.getElementById('go-to-login-btn').addEventListener('click', () => showView('login'));
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const errorEl = document.getElementById('login-error');
+
+                const user = users[email];
+
+                if (user && user.password === password && user.type === currentRole) {
+                    currentUser = user;
+                    errorEl.textContent = '';
+                    if (user.type === 'patient') {
+                        document.getElementById('patient-name').textContent = user.name;
+                        document.getElementById('welcome-patient-name').textContent = `Bem-vinda, ${user.name.split(' ')[0]}!`;
+                        showView('patientDashboard');
+                    } else {
+                        document.getElementById('doctor-name').textContent = user.name;
+                        renderDoctorCalendar();
+                        showView('doctorDashboard');
+                    }
+                } else {
+                    errorEl.textContent = 'Credenciais inválidas ou tipo de utilizador incorreto.';
+                }
+            });
+
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('reg-name').value;
+                const email = document.getElementById('reg-email').value;
+                const cpf = document.getElementById('reg-cpf').value;
+                const password = document.getElementById('reg-password').value;
+                const errorEl = document.getElementById('register-error');
+
+                if (users[email] || users[cpf]) {
+                    errorEl.textContent = 'E-mail ou CPF já registado.';
+                    return;
+                }
+
+                users[email] = { type: 'patient', password, name, cpf };
+                users[cpf] = { type: 'patient', password, name, email };
+                saveDataToStorage();
+
+                alert('Registo efetuado com sucesso!');
+                showView('login');
+            });
+
+            const logout = () => {
+                currentUser = null;
+                showView('login');
+            };
+
+            document.getElementById('logout-btn-patient').addEventListener('click', logout);
+            document.getElementById('logout-btn-doctor').addEventListener('click', logout);
+
+            // Lógica do Painel do Médico
+            const renderDoctorCalendar = () => {
+                const calendarGrid = document.getElementById('calendar-grid');
+                const monthYearEl = document.getElementById('month-year');
+                calendarGrid.innerHTML = '';
+                
+                const month = currentDate.getMonth();
+                const year = currentDate.getFullYear();
+                
+                monthYearEl.textContent = currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+                
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                for (let i = 0; i < firstDay; i++) {
+                    calendarGrid.innerHTML += '<div></div>';
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayEl = document.createElement('div');
+                    dayEl.className = 'calendar-day cursor-pointer p-2 text-center';
+                    dayEl.textContent = day;
+                    dayEl.dataset.date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    if (selectedDate && selectedDate.toDateString() === new Date(year, month, day).toDateString()) {
+                        dayEl.classList.add('selected');
+                    }
+                    calendarGrid.appendChild(dayEl);
+                }
+            };
+            
+            document.getElementById('calendar-grid').addEventListener('click', (e) => {
+                if(e.target.classList.contains('calendar-day') && e.target.dataset.date){
+                    const [year, month, day] = e.target.dataset.date.split('-');
+                    selectedDate = new Date(year, month-1, day);
+                    renderDoctorCalendar();
+                    updateAvailabilityUI();
+                }
+            });
+
+            const updateAvailabilityUI = () => {
+                const slotsContainer = document.getElementById('availability-slots');
+                const dateText = document.getElementById('selected-date-text');
+                const addContainer = document.getElementById('add-slot-container');
+                slotsContainer.innerHTML = '';
+
+                if(!selectedDate){
+                    dateText.textContent = '';
+                    addContainer.classList.add('hidden');
+                    return;
+                }
+                
+                dateText.textContent = selectedDate.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
+                addContainer.classList.remove('hidden');
+
+                const dateKey = selectedDate.toISOString().split('T')[0];
+                const doctorCRM = currentUser.crm;
+                const availability = doctorAvailability[doctorCRM]?.[dateKey] || [];
+                
+                availability.sort().forEach(slot => {
+                    slotsContainer.innerHTML += `
+                        <div class="flex justify-between items-center bg-gray-100 p-2 rounded-md">
+                            <span>${slot}</span>
+                            <button data-slot="${slot}" class="remove-slot-btn text-red-500 hover:text-red-700">&times;</button>
+                        </div>
+                    `;
+                });
+            };
+
+            document.getElementById('add-slot-btn').addEventListener('click', () => {
+                const time = document.getElementById('new-slot-time').value;
+                if(!time || !selectedDate) return;
+
+                const dateKey = selectedDate.toISOString().split('T')[0];
+                const doctorCRM = currentUser.crm;
+
+                if(!doctorAvailability[doctorCRM]) doctorAvailability[doctorCRM] = {};
+                if(!doctorAvailability[doctorCRM][dateKey]) doctorAvailability[doctorCRM][dateKey] = [];
+                
+                if(!doctorAvailability[doctorCRM][dateKey].includes(time)) {
+                    doctorAvailability[doctorCRM][dateKey].push(time);
+                }
+
+                saveDataToStorage();
+                updateAvailabilityUI();
+            });
+            
+            document.getElementById('availability-slots').addEventListener('click', (e) => {
+                if(e.target.classList.contains('remove-slot-btn')){
+                    const slotToRemove = e.target.dataset.slot;
+                    const dateKey = selectedDate.toISOString().split('T')[0];
+                    const doctorCRM = currentUser.crm;
+                    
+                    const slots = doctorAvailability[doctorCRM]?.[dateKey];
+                    if(slots){
+                        doctorAvailability[doctorCRM][dateKey] = slots.filter(s => s !== slotToRemove);
+                        saveDataToStorage();
+                        updateAvailabilityUI();
+                    }
+                }
+            });
+
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderDoctorCalendar();
+            });
+             document.getElementById('next-month').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderDoctorCalendar();
+            });
+
+             // Lógica de Agendamento do Paciente
+            const renderPatientCalendar = () => {
+                 // Esta função pode ser expandida para mostrar o calendário ao paciente.
+                 // Por enquanto, a lógica principal está em mostrar os horários.
+                 const container = document.getElementById('patient-calendar-container');
+                 container.innerHTML = `
+                    <p class="text-gray-600">Calendário de agendamento virá aqui.</p>
+                    <p class="text-gray-600">Por enquanto, selecione uma data de exemplo abaixo para ver os horários:</p>
+                    <div id="patient-date-selection" class="mt-4 flex flex-wrap gap-2"></div>
+                 `;
+                 
+                 const doctorCRM = '12345-SP'; // Exemplo com o médico mock
+                 const availableDates = Object.keys(doctorAvailability[doctorCRM] || {});
+                 
+                 const dateSelectionContainer = document.getElementById('patient-date-selection');
+                 availableDates.forEach(dateStr => {
+                     const dateButton = document.createElement('button');
+                     dateButton.className = 'p-2 border rounded-lg hover:bg-blue-100';
+                     dateButton.textContent = new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR');
+                     dateButton.dataset.date = dateStr;
+                     dateSelectionContainer.appendChild(dateButton);
+                 });
+            };
+
+            document.getElementById('patient-calendar-container').addEventListener('click', (e) => {
+                if(e.target.dataset.date){
+                    const dateStr = e.target.dataset.date;
+                    document.getElementById('patient-selected-date').textContent = `Horários para ${new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR')}`;
+                    renderAvailableSlots(dateStr, '12345-SP');
+                }
+            });
+
+            const renderAvailableSlots = (dateStr, doctorCRM) => {
+                const slotsContainer = document.getElementById('patient-availability-slots');
+                slotsContainer.innerHTML = '';
+                
+                const allSlots = doctorAvailability[doctorCRM]?.[dateStr] || [];
+                const bookedSlots = appointments
+                    .filter(app => app.date === dateStr && app.doctorCRM === doctorCRM)
+                    .map(app => app.time);
+
+                const availableSlots = allSlots.filter(slot => !bookedSlots.includes(slot));
+                
+                if (availableSlots.length === 0) {
+                    slotsContainer.innerHTML = '<p class="text-gray-500 col-span-full">Nenhum horário disponível para esta data.</p>';
+                    return;
+                }
+                
+                availableSlots.sort().forEach(slot => {
+                    const slotButton = document.createElement('button');
+                    slotButton.className = 'p-2 border rounded-lg text-center hover:bg-blue-500 hover:text-white';
+                    slotButton.textContent = slot;
+                    slotButton.dataset.time = slot;
+                    slotButton.dataset.date = dateStr;
+                    slotButton.dataset.doctor = doctorCRM;
+                    slotsContainer.appendChild(slotButton);
+                });
+            };
+            
+            document.getElementById('patient-availability-slots').addEventListener('click', (e) => {
+                if(e.target.dataset.time){
+                    const { time, date, doctor } = e.target.dataset;
+                    const doctorName = Object.values(users).find(u => u.crm === doctor)?.name || 'Médico';
+                    
+                    document.getElementById('confirm-details').textContent = `${time} de ${new Date(date + 'T00:00:00').toLocaleDateString('pt-BR')} com ${doctorName}`;
+                    document.getElementById('confirmation-section').classList.remove('hidden');
+                    
+                    const confirmBtn = document.getElementById('confirm-appointment-btn');
+                    confirmBtn.onclick = () => {
+                        appointments.push({
+                            patientCPF: currentUser.cpf,
+                            doctorCRM: doctor,
+                            date: date,
+                            time: time
+                        });
+                        saveDataToStorage();
+                        alert('Consulta agendada com sucesso!');
+                        document.getElementById('confirmation-section').classList.add('hidden');
+                        renderAvailableSlots(date, doctor); // Atualiza os horários
+                    };
+                }
+            });
+
+            document.getElementById('btn-new-appointment').addEventListener('click', () => {
+                renderPatientCalendar();
+                showView('scheduling');
+            });
+
+            document.getElementById('back-to-dashboard-btn').addEventListener('click', () => showView('patientDashboard'));
+            document.getElementById('back-to-dashboard-btn-2').addEventListener('click', () => showView('patientDashboard'));
+
+            document.getElementById('btn-view-schedule').addEventListener('click', () => {
+                const listEl = document.getElementById('appointments-list');
+                listEl.innerHTML = '<h3 class="text-xl font-semibold mb-4">Suas Próximas Consultas</h3>';
+                
+                const myApps = appointments.filter(app => app.patientCPF === currentUser.cpf);
+
+                if(myApps.length === 0){
+                    listEl.innerHTML += '<p class="text-gray-500">Você não possui nenhuma consulta agendada.</p>';
+                } else {
+                     myApps.forEach(app => {
+                        const doctorName = Object.values(users).find(u => u.crm === app.doctorCRM)?.name || 'Médico';
+                        listEl.innerHTML += `
+                            <div class="border-b pb-2 mb-2">
+                                <p class="font-semibold">${new Date(app.date + 'T00:00:00').toLocaleDateString('pt-BR', {weekday: 'long', day: '2-digit', month: 'long'})} às ${app.time}</p>
+                                <p class="text-gray-600">Com ${doctorName}</p>
+                            </div>
+                        `;
+                     });
+                }
+                showView('myAppointments');
+            });
+        });
+
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
